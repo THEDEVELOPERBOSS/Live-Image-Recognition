@@ -6,10 +6,12 @@ from pathlib import Path
 script_dir = Path(__file__).resolve().parent
 
 file_name = (
+    script_dir
     / "TRAIN_VAL"
 )
 
 training_dir = (
+    script_dir
     / "TRAIN_VAL"
     / "TRAINING"
 )
