@@ -1,28 +1,29 @@
-import tensorflow as tf    
+import tensorflow as tf 
+import os 
+from pathlib import Path 
 
-import os
-from pathlib import Path
-# This gets stuff from camera.py
-import keyboard
-import time
-import camera_handler
-
-# Set up a non-blocking hook so things can keep running.
-# Space is the trigger key and it starts the function in background without freezing main.py
-keyboard.add_hotkey('space', camera_handler.trigger_capture) # see if pyautogui can trigger the keyboard
-
-print("Press space to take a picture")
-
-try: 
-    while True:
-        # Main program goes here complelty unaffected 
-        # Tensorflow just has to get IMAGES_FROM_CAMERA/current.jpg when it needs
+def training_capture():
+    # Archives old photo and captures a fresh one silently
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+    
+    if os.path.exists(active_path):
+        timestamp = datetime.now().strftime(r'%Y%m%d_%H%M%S')
+        os.rename(active_path, os.path.join(OUTPUT_FOLDER, f'archive_{timestamp}.jpg'))
         
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("Stopping camera feed")
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        return False
+    
+    for _ in range(5): # Warm up sensor
+        cap.read()
+        
+    ret, frame = cap.read()
+    if ret:
+        cv2.imwrite(active_path, frame)
+        
+    cap.release()
+    return ret
 
-script_dir = Path(__file__).resolve().parent
 
 file_name = (
     script_dir

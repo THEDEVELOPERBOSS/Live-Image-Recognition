@@ -2,10 +2,15 @@
 import cv2 
 import os 
 from datetime import datetime
+from pathlib import Path
 
-OUTPUT_FOLDER = 'IMAGES_FROM_CAMERA'
+# Path.cwd().parent means go up one folder
+OUTPUT_FOLDER = Path.cwd().parent / 'IMAGES FROM CAMERA'
 ACTIVE_NAME = 'current.jpg'
-active_path = os.path.join(OUTPUT_FOLDER, ACTIVE_NAME)
+
+# Combine folder and filename
+full_path = OUTPUT_FOLDER / ACTIVE_NAME
+print(full_path.resolve())
 # Make a new one of these called save_capture so I can have it collect training data. I need to be able to see the image and name what it is and where it should go in the training or validation data
 def trigger_capture():
     # Archives old photo and captures a fresh one silently
