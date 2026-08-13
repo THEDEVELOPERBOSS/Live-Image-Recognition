@@ -1,21 +1,49 @@
 import tensorflow as tf 
-import os 
 from pathlib import Path 
 import cv2 
 import time
+from tensorflow.keras.optimizers import RMSprop
+
+script_dir = Path(__file__).resolve().parent
+
 # Trains CNN
 # This should help make it so I can specify I am taking pictures for training
-def dataset_image(dataset_type, image_class):
-        while True:
-            dataset_type = input(
-                        "Is this for training or validation? "
-                ).strip().lower()
-            
-            if dataset_type in('training', 'validation'):
-                break
-            
-            print("Please enter 'training' or 'validation'")
-    
+def dataset_image(): 
+    while True:
+        print('\nWhat type of image are you taking?')
+        print('\n[1] Training')
+        print('\n[2] Validation')
+        
+        dataset_choice = input("\nSelect datset: ").strip()
+        
+        if dataset_choice == '1':
+            dataset_type = 'TRAINING'
+            break
+        
+        elif dataset_choice == '2':
+            dataset_type = 'VALIDATION'
+            break
+        
+        print('Please enter 1 or 2')
+    while True:
+        print('\nWhat is this image of')
+        print('[1] Person')
+        print('[2] Over Ear Headphones')
+        print('[3] Book')
+        
+        class_choice = input("Select what it is: ").strip()
+        
+        if class_choice == '1':
+            image_class = 'Person'
+            break
+        elif class_choice == '2':
+            image_class = 'Over_Ear_Headphones'
+            break
+        elif class_choice == '3':
+            image_class = 'Book'
+            break
+        
+        print("Please enter a valid number")
     image_class = input(
         "What is this image of? "
     ).strip().lower()
@@ -23,16 +51,10 @@ def dataset_image(dataset_type, image_class):
     save_folder = (
         script_dir
         / 'TRAIN_VAL'
-        / dataset_type.upper()
-        
+        / dataset_type
+        / image_class
     )
-    # Archives old photo and captures a fresh one silently
-    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-    
-    if os.path.exists(active_path):
-        timestamp = datetime.now().strftime(r'%Y%m%d_%H%M%S')
-        os.rename(active_path, os.path.join(OUTPUT_FOLDER, f'archive_{timestamp}.jpg'))
-        
+    save_folder.mkdir(parents=True, exist_ok=True)
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         return False
@@ -43,14 +65,44 @@ def dataset_image(dataset_type, image_class):
     for number in range(3, 0, -1):
         print(number)
         time.sleep(1)
-        
-    ret, frame = cap.read()
-    print("Picture taken")
+    # Takes picture
     ret, frame = cap.read()
     
-    # show the picture
-    ret, frame = cap.read()
+    if not ret:
+        print('Failed to take picture.')
+        cap.release()
+        return False
+
+    print("Picture taken")
+    # Displays image 
     cv2.imshow("Captured Image", frame)
+    cv2.waitKey(2)
+    while True:
+        choice = input("Save this image? (y/n): ").strip().lower()
+        
+        if choice in ('y', 'n'):
+            break 
+        
+        print("Please enter y or n")
+        
+    if choice == 'n':
+        cv2.destroyAllWindows()
+        print("Retaking...")
+    image_name = input("What should I call this image? ").strip()
+    # Adds .jpg at the end to give it a file extension if not already done
+    if not image_name.lower().endswith('.jpg'): 
+        image_name += ".jpg" 
+    save_path = save_folder / image_name
+    cv2.imwrite(str(save_path), frame)
+# Should make this: 
+# dataset_type = training
+# image_class = horse
+# image_name = horse_001.jpg
+# into this: 
+# TRAIN_VAL/
+#└── TRAINING/
+#     └── horse/
+#        └── horse_001.jpg
     if ret:
         cv2.imwrite(active_path, frame)
         
@@ -59,6 +111,7 @@ def dataset_image(dataset_type, image_class):
 
 
 file_name = (
+    
     script_dir
     / "TRAIN_VAL"
 )
