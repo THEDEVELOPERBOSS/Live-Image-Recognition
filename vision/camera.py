@@ -11,7 +11,7 @@ ACTIVE_NAME = 'current.jpg'
 # Combine folder and filename
 full_path = OUTPUT_FOLDER / ACTIVE_NAME
 print(full_path.resolve())
-# Make a new one of these called save_capture so I can have it collect training data. I need to be able to see the image and name what it is and where it should go in the training or validation data
+
 def trigger_capture():
     # Archives old photo and captures a fresh one silently
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)

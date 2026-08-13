@@ -1,8 +1,31 @@
 import tensorflow as tf 
 import os 
 from pathlib import Path 
-
-def training_capture():
+import cv2 
+import time
+# Trains CNN
+# This should help make it so I can specify I am taking pictures for training
+def dataset_image(dataset_type, image_class):
+        while True:
+            dataset_type = input(
+                        "Is this for training or validation? "
+                ).strip().lower()
+            
+            if dataset_type in('training', 'validation'):
+                break
+            
+            print("Please enter 'training' or 'validation'")
+    
+    image_class = input(
+        "What is this image of? "
+    ).strip().lower()
+    # Makes it so the folders get made automatically
+    save_folder = (
+        script_dir
+        / 'TRAIN_VAL'
+        / dataset_type.upper()
+        
+    )
     # Archives old photo and captures a fresh one silently
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
     
@@ -16,8 +39,18 @@ def training_capture():
     
     for _ in range(5): # Warm up sensor
         cap.read()
+    
+    for number in range(3, 0, -1):
+        print(number)
+        time.sleep(1)
         
     ret, frame = cap.read()
+    print("Picture taken")
+    ret, frame = cap.read()
+    
+    # show the picture
+    ret, frame = cap.read()
+    cv2.imshow("Captured Image", frame)
     if ret:
         cv2.imwrite(active_path, frame)
         
