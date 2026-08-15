@@ -1,10 +1,9 @@
-import tensorflow as tf 
 from pathlib import Path 
 import cv2 
 import time
 
 
-script_dir = Path(__file__).resolve().parent
+script_dir = Path(__file__).resolve().parent.parent
 
 # Collects images for the training and validation datasets
 # This should help make it so I can specify I am taking pictures for training
@@ -45,25 +44,29 @@ def dataset_image():
         
         print("Please enter a valid number")
     # Makes it so the folders get made automatically
+    print("1. Creating folders")
     save_folder = (
         script_dir
         / 'TRAIN_VAL'
         / dataset_type
         / image_class
     )
+    print("2. Making directory")
     save_folder.mkdir(parents=True, exist_ok=True)
+    print('3. Directory succesfully made')
     while True: # keeps looping until one gets chosen to be saved
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
             return False
-        
-        for _ in range(5): # Warm up sensor
+        print('3. Warming up sensor')
+        for _ in range(2): # Warm up sensor by taking x amount of pictures to allow it to adjust b
             cap.read()
         # Countdown
         for number in range(3, 0, -1):
             print(number)
             time.sleep(1)
         # Takes picture
+        print("4. Taking the picture")
         ret, frame = cap.read()
         
         cap.release()
