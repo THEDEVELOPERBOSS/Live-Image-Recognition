@@ -60,7 +60,7 @@ def dataset_image():
             return False
         print('3. Warming up sensor') # gets to here I think and takes a while. Find a way to optimize
         for _ in range(2): # Warm up sensor by taking x amount of pictures to allow it to adjust b
-            cap.read()
+            cap.read() 
         # Countdown
         for number in range(3, 0, -1):
             print(number)
